@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from config import DATABASE_URI
+from db_config import DATABASE_URI
 #from sqlalchemy.ext.declarative import declarative_base
 import time
 from models import Base, JsonObject
@@ -7,13 +7,17 @@ from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 import json
 
+###This class defines the loading logic
 
-class pgAccessPoint():
-    def __init__(self) -> None:
+class PgAccessPoint:
+    
+    def __init__(self, create_model_table):
         self.engine = create_engine(DATABASE_URI)
+        self.create_model_table = create_model_table
         
         #Create a new table based on the metadata collected by Base - this can safely be switched off if the table has been created
-        Base.metadata.create_all(self.engine)
+        if create_model_table:
+            Base.metadata.create_all(self.engine)
         
         self.Session = sessionmaker(bind=self.engine)
         self.UNIQUENESS = 10e2
@@ -22,7 +26,7 @@ class pgAccessPoint():
     def write_json(self, json_data):
         
         json_obj = JsonObject(
-            id=int(float(str(time.time())[5:])*self.UNIQUENESS),
+            id=int(float(str(time.time())[4:])*self.UNIQUENESS),
             data=json_data
         )
         
@@ -30,13 +34,13 @@ class pgAccessPoint():
             s.add(json_obj)
             
     
-    def read_json(self):
+    def read_first_json(self):
         with self.session_scope(self.Session) as s:
             q = s.query(JsonObject).first()
             json_data = q.data
             json_id = q.id
             
-        return json_data
+        return json_id, json_data
             
     
     @contextmanager
@@ -52,4 +56,3 @@ class pgAccessPoint():
             session.close()
             
             
-pgdb = pgAccessPoint()
