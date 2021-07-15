@@ -33,4 +33,5 @@ schema = {
         "type" : {"type" : "string"},
     },
     "required": ["address", "author", "id", "created", "counters"]
-}
+} 
+#Changes aren't being tracked anymore
