@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
 from db_config import DATABASE_URI
-#from sqlalchemy.ext.declarative import declarative_base
 import time
 from models import Base, JsonObject
 from sqlalchemy.orm import sessionmaker

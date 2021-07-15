@@ -1,5 +1,6 @@
 import json
 from jsonschema import validate
+from jsonschema.exceptions import ValidationError
 from json_config import incoming_schema as incoming_schema
 from json_config import outgoing_schema
 from datetime import datetime, timezone
@@ -104,7 +105,7 @@ class JsonTransformer:
                 self.eprint("Handling error softly by copying original time data to new fields.")
             else:
                 print(traceback.format_exc())
-                raise Exception("Json object with id {} has an inconsistent date time format in the 'created' property.".format(json_info["id"]))
+                raise ValueError("Json object with id {} has an inconsistent date time format in the 'created' property.".format(json_info["id"]))
     
     
     
@@ -143,7 +144,7 @@ class JsonTransformer:
                 self.eprint("Handling error softly by copying original time data to new fields.")
             else:
                 print(traceback.format_exc())
-                raise Exception("Json object with id {} has an inconsistent date time format in the 'updated' property.".format(json_info["id"]))
+                raise ValueError("Json object with id {} has an inconsistent date time format in the 'updated' property.".format(json_info["id"]))
             
     
     
@@ -195,9 +196,9 @@ class JsonTransformer:
         #Validate throws an exception if the schema cannot be validated
         try:
             validate(instance=json_data, schema=incoming_schema)
-        except:
+        except ValidationError:
             print(traceback.format_exc())
-            raise Exception("The incoming JSON object has not been formatted according to the specified JSON schema")
+            raise ValidationError("The incoming JSON object has not been formatted according to the specified JSON schema")
             
                 
         conv_data = {}
@@ -210,9 +211,9 @@ class JsonTransformer:
         #Throws an error if the data output does not conform to the json schema specification
         try:
             validate(instance=conv_data, schema=outgoing_schema)
-        except:
+        except ValidationError:
             print(traceback.format_exc())
-            raise Exception("An unknown transformation error has occured." + "\n" +
+            raise ValidationError("An unknown transformation error has occured." + "\n" +
                 "The outgoing JSON object has not been formatted according to the specified JSON schema.")
         
         return conv_data

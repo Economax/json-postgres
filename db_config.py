@@ -2,7 +2,7 @@
 table_name = "json_parse_alexander"
 
 usn = "postgres"
-pw = "P0stgr3sP0w3r"
+pw = "admin"
 url = "localhost"
 port = "2304"
 db_name = "json-data"
