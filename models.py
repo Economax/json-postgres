@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from db_config import table_name
 
 ### This class defines the data model used in the Postgres DB table we write json objects to
-### Note that we are assuming that JSONB is a valid column type
+### Note that we are assuming that JSONB is a valid column type in the postgres db
 
 Base = declarative_base()
 

@@ -1,4 +1,6 @@
 
+### Modify this file to write to your own database
+
 table_name = "json_parse_alexander"
 
 usn = "postgres"

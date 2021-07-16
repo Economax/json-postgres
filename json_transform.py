@@ -24,7 +24,7 @@ class JsonTransformer:
     
     def __init__(self):
         
-        #This is a correspondence from json key value to the transformations those keys are associated with
+        #This is a correspondence from a top level json key value to the transformations those keys are associated with
         self.conversions = {"address":self.map_address, "author":self.map_author, "id":self.map_id,
                     "created":self.map_created, "counters":self.map_counters,
                     "content":self.map_content, "updated":self.map_updated}
@@ -34,12 +34,12 @@ class JsonTransformer:
         self.bcolors = self.bcolors()
     
     
-    
+    #Stop the transformer from raising errors if the time format is inconsistent
     def set_soft_errors(self, flag):
         self.soft_errors = flag
     
     
-    
+    #Stop error printing given soft errors set to true
     def set_silent(self, flag):
         self.silent = flag
     

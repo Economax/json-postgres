@@ -6,7 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 import json
 
-###This class defines the loading logic
+###This class defines the loading/writing to database logic
+### You can manually set DATABASE_URI as a parameter if preferred, either here or in db_config.py
 
 class PgAccessPoint:
     
@@ -18,7 +19,7 @@ class PgAccessPoint:
         if create_model_table:
             Base.metadata.create_all(self.engine)
         
-        self.Session = sessionmaker(bind=self.engine)
+        self.session_factory = sessionmaker(bind=self.engine)
         self.UNIQUENESS = 10e2
     
     #Simply pass a python dictionary or json data
@@ -29,12 +30,12 @@ class PgAccessPoint:
             data=json_data
         )
         
-        with self.session_scope(self.Session) as s:
+        with self.session_scope() as s:
             s.add(json_obj)
             
     
     def read_first_json(self):
-        with self.session_scope(self.Session) as s:
+        with self.session_scope() as s:
             q = s.query(JsonObject).first()
             json_data = q.data
             json_id = q.id
@@ -43,8 +44,8 @@ class PgAccessPoint:
             
     
     @contextmanager
-    def session_scope(self, Session):
-        session = Session()
+    def session_scope(self):
+        session = self.session_factory()
         try:
             yield session
             session.commit()
